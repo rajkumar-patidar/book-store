@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Book Store</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <a href="/">List Books</a>
+    <% if (user) { %>
+      <a href="/add-book">Add Book</a>
+    <% } %>
+
+    <% if (user) { %>
+    <a class="right" href="/logout">Logout</a>
+    <% }else{ %>
+      <a href="/login">Login</a>
+    <% } %>
+  </div>
+
+
+  <h1>List of Books</h1>
+
+  <form action="/" method="get">
+    <input type="text" name="search" value="<%= search %>" placeholder="Search by title or author">
+    <button type="submit">Search</button>
+
+    <strong>Sort by:</strong>
+    <a href="/?page=1&search=<%= search %>&sortBy=title">Title</a> |
+    <a href="/?page=1&search=<%= search %>&sortBy=publishedDate">Published Date</a> |
+    <a href="/?page=1&search=<%= search %>&sortBy=price">Price</a>
+  </form>
+
+    <br>
+  
+    <table>
+        <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Author</th>
+                <th>Published Date</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Category</th>
+                <% if (user) { %>
+                <th>Download</th>                
+                <th>Update</th>
+                <th>Delete</th>
+                <% } %>
+            </tr>
+        </thead>
+        <tbody>
+            <% books.forEach(book => { %>
+                <tr id="book-<%= book._id %>">
+                    <td><%= book.title %></td>
+                    <td><%= book.author %></td>
+                    <td><%= book.formattedPublishedDate %></td>
+                    <td><%= book.description %></td>
+                    <td>$<%= book.price %></td>
+                    <td><%= book.category %></td>
+                    <% if (user) { %>
+                    <td><a href="<%= book.pdf_url %>" download><button class="edit-button">Download</button></a></td>                    
+                    <td><a href="/book/<%= book._id %>"><button class="edit-button">Update</button></a></td>
+                    <td><button class="delete-button" data-id="<%= book._id %>">Delete</button></td>
+                    <% } %>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    
+  <br>
+  <div>
+    <% if (currentPage > 1) { %>
+      <a href="/?page=<%= currentPage - 1 %>&search=<%= search %>&sortBy=<%= sortBy %>">Previous</a>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
+      <a href="/?page=<%= currentPage + 1 %>&search=<%= search %>&sortBy=<%= sortBy %>">Next</a>
+    <% } %>
+  </div>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', async event => {
+                const bookId = event.target.getAttribute('data-id');
+                try {
+                    const response = await fetch(`/book/${bookId}`, {
+                        method: 'DELETE'
+                    });
+                    // If deletion was successful, hide the deleted book's row
+                    const bookRow = document.getElementById(`book-${bookId}`);
+                    bookRow.style.display = 'none';
+                } catch (error) {
+                    console.error('Error deleting book:', error);
+                }
+            });
+        });
+    });
+</script>
+
+
+
+  
+</body>
+</html>

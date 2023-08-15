@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Book Store</title>
+    <link rel="stylesheet" href="/css/styles.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(() => {
+
+			$("#form1").submit((event) => {
+				event.preventDefault();
+
+                var registerUser = {
+                    name: $("#name").val(),
+                    email: $("#email").val(),
+                    password:$("#password").val()
+                }
+
+				$.ajax({
+					type: 'POST',
+					url: '/register',
+					data: JSON.stringify(registerUser),
+					dataType: 'json',
+                    contentType: 'application/json',
+					success: (response) => {
+						$('#form1')[0].reset();
+						document.getElementById("check").innerHTML = response.success;
+						window.location.href = '/';
+						setTimeout(() => {
+							document.getElementById("check").innerHTML = "";
+						}, 3000);
+						if (response.success == "You are regestered, You can login now.") {
+							document.getElementById("aa").click();
+						};
+					},
+					error: (response) => {
+						document.getElementById("check").innerHTML = response.responseJSON.message;
+						setTimeout(() => {
+							document.getElementById("check").innerHTML = "";
+						}, 3000);
+						if (response.success == "success!") {
+							document.getElementById("aa").click();
+						};
+					}
+				})
+			});
+		});
+	</script>
+</head>
+
+<body>
+
+	<div class="navbar">
+		<a href="/">List Books</a>
+		<% if (user) { %>
+		  <a href="/add-book">Add Book</a>
+		<% } %>
+	
+		<% if (user) { %>
+		<a class="right" href="/logout">Logout</a>
+		<% }else{ %>
+		  <a href="/login">Login</a>
+		<% } %>
+	</div>
+
+	<div class="col-md-4 col-md-offset-4 form-card">
+		<div>
+			<p>Register Now
+			</p>
+		</div>
+		<div class="form-group">
+			<form id="form1" method="post">
+                <input class="loginInput" id="name" type="text" name="name" placeholder="Full Name" required="" class="form-control"><br />
+				<input class="loginInput" id="email" type="text" name="email" placeholder="E-mail" required="" class="form-control"><br />
+				<input class="loginInput" id="password" type="password" name="password" placeholder="Password" required="" class="form-control"><br />
+				<input type="submit" value="Register" class="btn btn-success">
+			</form>
+		</div>
+
+		<div class="mssg bg-danger">
+			<span id="check"></span>
+		</div>
+		<div>
+			<span>Already Registered! <a href="/login">Login</a></span>
+		</div>
+		<div id="LangTable"><a href="/login" id="aa"></a>
+		</div>
+	</div>
+</body>
+
+</html>

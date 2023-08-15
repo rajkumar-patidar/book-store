@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="/css/styles.css">
+	<title>Book Store</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(() => {
+
+			$("#form").submit((event) => {
+				event.preventDefault();
+
+                var loginUser = {
+                    email: $("#email").val(),
+                    password:$("#password").val()
+                }
+
+				var request = $.ajax({
+					type: 'POST',
+					url: '/login',
+					data: JSON.stringify(loginUser),
+					dataType: 'json',
+                    contentType: 'application/json',
+					success: (response) => {
+						$('#form')[0].reset();
+						window.location.href = '/';
+						setTimeout(() => {
+							document.getElementById("check").innerHTML = "";
+						}, 3000);
+						if (response.success == "success!") {
+							document.getElementById("aa").click();
+						};
+					},
+					error: (response) => {
+                        $('#form')[0].reset();
+						document.getElementById("check").innerHTML = response.responseJSON.message;
+						setTimeout(() => {
+							document.getElementById("check").innerHTML = "";
+						}, 3000);
+						if (response.success == "success!") {
+							document.getElementById("aa").click();
+						};
+					}
+				});
+			});
+
+		});
+	</script>
+</head>
+
+<body>
+
+
+	<div class="navbar">
+		<a href="/">List Books</a>
+		<% if (user) { %>
+		  <a href="/add-book">Add Book</a>
+		<% } %>
+	
+		<% if (user) { %>
+		<a class="right" href="/logout">Logout</a>
+		<% }else{ %>
+		  <a href="/login">Login</a>
+		<% } %>
+	</div>
+
+
+	<div class="col-md-4 col-md-offset-4 form-card">
+		<div>
+			<p>Login</p>
+		</div>
+		<div class="form-group ">
+			<form id="form" method="post">
+				<input class="loginInput" id="email" type="text" name="email" placeholder="E-mail" required="" class="form-control"><br />
+				<input class="loginInput" id="password" type="password" name="password" placeholder="Password" required="" class="form-control"><br />
+				<input type="submit" value="Login" class="btn btn-success">
+			</form>
+		</div>
+		<div class="mssg bg-danger">
+			<span id="check"></span>
+		</div>
+		<div id="LangTable"><a href="/profile" id="aa"></a>
+		</div>
+		<div><span>Do you forgot password? </span><a href="/forgetpass">click here</a>
+		</div>
+		<div id="LangTable"><span>Do you want to register a new Account? </span><a href="/register">click here</a>
+		</div>
+	</div>
+</body>
+
+</html>

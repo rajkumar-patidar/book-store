@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="/css/styles.css">
+	<title>Book Store</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(() => {
+
+			$("#form2").submit((event) => {
+
+				event.preventDefault();
+				$('#changeButton').prop('disabled', true);
+				$.ajax({
+					type: 'POST',
+					url: '/forgetpass',
+					data: $('#form2').serialize(),
+					dataType: "json",
+					success: (response) => {
+						$('#form2')[0].reset();
+						document.getElementById("check").innerHTML = response.message;
+						setTimeout(() => {
+							document.getElementById("check").innerHTML = "";
+						}, 6000);
+						$('#changeButton').prop('disabled', false);
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						console.error('AJAX Error:', textStatus, errorThrown);
+						$('#changeButton').prop('disabled', false);
+					}
+				})
+			});
+
+		});
+	</script>
+</head>
+
+<body>
+
+	<div class="navbar">
+		<a href="/">List Books</a>
+		<% if (user) { %>
+		  <a href="/add-book">Add Book</a>
+		<% } %>
+	
+		<% if (user) { %>
+		<a class="right" href="/logout">Logout</a>
+		<% }else{ %>
+		  <a href="/login">Login</a>
+		<% } %>
+	</div>
+
+	<div class="col-md-4 col-md-offset-4 form-card">
+		<div>
+			<p>Change Password</p>
+		</div>
+		<div class="form-group">
+			<form id="form2" method="post">
+				<input class="loginInput" type="text" name="email" placeholder="E-mail" required="" class="form-control"><br />
+				<input class="loginInput" type="password" name="password" placeholder="Password" required="" class="form-control"><br />
+				<input class="loginInput" type="password" name="passwordConf" placeholder="Confirm Password" required=""
+					class="form-control"><br />
+				<input id="changeButton" type="submit" value="Change" class="btn btn-success">
+			</form>
+		</div>
+		<div class="mssg bg-danger">
+			<span id="check"></span>
+		</div>
+		<div id="LangTable"><a href="/login" id="aa"></a>
+		</div>
+		<div id="LangTable"><span>Go back to </span><a href="/register">Register</a> or <a href="/login">Login</a>
+		</div>
+	</div>
+
+</body>
+
+</html>
