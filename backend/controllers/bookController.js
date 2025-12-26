@@ -19,6 +19,7 @@ exports.createBook = catchAsyncErrors(async (req, res, next) => {
       pdf_url: '1691513649039-.pdf',
     });
     await newBook.save();
+    test();
     res.redirect('/');
 });
 
