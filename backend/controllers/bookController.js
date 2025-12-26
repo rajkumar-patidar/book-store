@@ -20,6 +20,7 @@ exports.createBook = catchAsyncErrors(async (req, res, next) => {
     });
     await newBook.save();
     test(test);
+    6764646;
     res.redirect('/');
 });
 
